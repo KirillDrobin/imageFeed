@@ -60,7 +60,8 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         var imageWidth = image.size.width
         if imageWidth == 0 {
-            imageWidth = 300
+            imageWidth = 200
+            print("imageWidth = 0")
         }
         
         let scale = imageViewWidth / imageWidth
