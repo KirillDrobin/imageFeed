@@ -16,7 +16,6 @@ class ImagesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }
@@ -31,7 +30,6 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.cellImage.image = image
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
-        
         let isLiked = indexPath.row % 2 == 0
         let likeImage = isLiked ? UIImage(named: "Active") : UIImage(named: "No Active")
         cell.likeButton.setImage(likeImage, for: .normal)
@@ -43,8 +41,6 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-        
-        
         
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
@@ -61,7 +57,12 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
-        let imageWidth = image.size.width
+        
+        var imageWidth = image.size.width
+        if imageWidth == 0 {
+            imageWidth = 300
+        }
+        
         let scale = imageViewWidth / imageWidth
         let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
         return cellHeight

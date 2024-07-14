@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,7 +30,7 @@
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="UHT-CC-7rY">
                                                     <rect key="frame" x="16" y="4" width="361" height="216"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                             <integer key="value" value="16"/>
@@ -47,18 +48,18 @@
                                                     <state key="normal" image="Active"/>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zZ7-qv-kLf" userLabel="Date">
-                                                    <rect key="frame" x="24.000000000000007" y="196" width="101.66666666666669" height="16"/>
+                                                    <rect key="frame" x="24.000000000000007" y="196.33333333333334" width="101.66666666666669" height="15.666666666666657"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="OVo-qr-sxa" userLabel="Gradient View">
-                                                    <rect key="frame" x="16" y="192" width="361" height="28"/>
+                                                    <rect key="frame" x="16" y="192.33333333333334" width="361" height="27.666666666666657"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </view>
                                             </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="backgroundColor" name="YP Black"/>
                                             <constraints>
                                                 <constraint firstItem="zZ7-qv-kLf" firstAttribute="leading" secondItem="UHT-CC-7rY" secondAttribute="leading" constant="8" id="2tC-6z-arj"/>
                                                 <constraint firstItem="OVo-qr-sxa" firstAttribute="trailing" secondItem="UHT-CC-7rY" secondAttribute="trailing" id="5ye-IF-Te3"/>
@@ -91,7 +92,7 @@
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="YP Black"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="0ZD-Gs-GgP" secondAttribute="trailing" id="IWd-EN-lZK"/>
                             <constraint firstItem="0ZD-Gs-GgP" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="LJH-QS-tOv"/>
@@ -111,5 +112,8 @@
     <resources>
         <image name="0" width="1600" height="1059"/>
         <image name="Active" width="42" height="42"/>
+        <namedColor name="YP Black">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
