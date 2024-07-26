@@ -16,7 +16,7 @@ final class ImagesListCell: UITableViewCell {
         super.awakeFromNib()
         gradient()
     }
-
+    
     private func gradient() {
         let gradient = CAGradientLayer()
         gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]

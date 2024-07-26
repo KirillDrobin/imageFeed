@@ -15,6 +15,8 @@
 		ED70075C2C3AEF39007F54E1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED70075B2C3AEF39007F54E1 /* Assets.xcassets */; };
 		ED70075F2C3AEF39007F54E1 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = ED70075E2C3AEF39007F54E1 /* Base */; };
 		ED7007662C3B0CCB007F54E1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED70075D2C3AEF39007F54E1 /* LaunchScreen.storyboard */; };
+		ED973E562C45B0D4008499A6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED973E552C45B0D4008499A6 /* ProfileViewController.swift */; };
+		ED973E582C468BE6008499A6 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED973E572C468BE6008499A6 /* SingleImageViewController.swift */; };
 		EDAA06D02C403059003CCDF2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED7007582C3AEF37007F54E1 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +30,8 @@
 		ED70075B2C3AEF39007F54E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED70075E2C3AEF39007F54E1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED7007602C3AEF39007F54E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED973E552C45B0D4008499A6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		ED973E572C468BE6008499A6 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +50,8 @@
 			children = (
 				ED7007562C3AEF37007F54E1 /* ImagesListViewController.swift */,
 				ED241BE12C3EFBF00089361C /* ImagesListCell.swift */,
+				ED973E552C45B0D4008499A6 /* ProfileViewController.swift */,
+				ED973E572C468BE6008499A6 /* SingleImageViewController.swift */,
 			);
 			path = ImageList;
 			sourceTree = "<group>";
@@ -155,7 +161,9 @@
 			files = (
 				ED7007572C3AEF37007F54E1 /* ImagesListViewController.swift in Sources */,
 				ED241BE22C3EFBF00089361C /* ImagesListCell.swift in Sources */,
+				ED973E562C45B0D4008499A6 /* ProfileViewController.swift in Sources */,
 				ED7007532C3AEF37007F54E1 /* AppDelegate.swift in Sources */,
+				ED973E582C468BE6008499A6 /* SingleImageViewController.swift in Sources */,
 				ED7007552C3AEF37007F54E1 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
