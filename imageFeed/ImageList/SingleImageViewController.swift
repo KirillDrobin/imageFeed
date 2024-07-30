@@ -12,9 +12,9 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
-    @IBOutlet var imageView: UIImageView!
+    @IBOutlet private var imageView: UIImageView!
     
-    @IBOutlet var singleImageScrollView: UIScrollView!
+    @IBOutlet private var singleImageScrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,11 +47,11 @@ final class SingleImageViewController: UIViewController {
         singleImageScrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
-    @IBAction func backward(_ sender: Any) {
+    @IBAction private func backward(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func didTapShareButton(_ sender: Any) {
+    @IBAction private func didTapShareButton(_ sender: Any) {
         let items: [Any] = ["Share a photo"]
         let shareView = UIActivityViewController(activityItems: items, applicationActivities: nil)
         self.present(shareView, animated: true, completion: nil)
