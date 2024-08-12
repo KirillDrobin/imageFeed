@@ -37,7 +37,7 @@ final class ProfileViewController: UIViewController {
     private var exitButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "ipad.and.arrow.forward")!, for: .normal)
-        button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+        button.addTarget(ProfileViewController.self, action: #selector(didTapExitProfileButton), for: .touchUpInside)
         button.tintColor = .ypRed
         return button
     }()
@@ -83,7 +83,8 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc
-    private func didTapButton() {
-    
+    private func didTapExitProfileButton() {
+        
     }
 }
+
