@@ -6,6 +6,9 @@ struct OAuthTokenResponseBody: Decodable {
 }
 
 final class OAuth2Service {
+    static let shared = OAuth2Service()
+    private init() {}
+    
     func fetchOAuthToken(code: String, completion: @escaping (_ result: Result<String, Error>) -> Void) {
         guard let tokenRequest = makeOAuthTokenRequest(code: code)
         else {
