@@ -1,6 +1,7 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
+    private let profileService = ProfileService.shared
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -12,7 +13,7 @@ final class ProfileViewController: UIViewController {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Екатерина Новикова"
+//        label.text = ""
         label.textColor = .ypWhite
         label.font = UIFont.boldSystemFont(ofSize: 23.0)
         return label
@@ -46,8 +47,19 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         makeConstraints()
+        
+        guard let profile = profileService.profile else {
+            print("No profile found")
+            return
+        }
+        updateProfileDetails(profile: profile)
     }
     
+    func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        nickNameLabel.text = profile.loginName
+        profileDescriptionLabel.text = profile.bio
+    }
     private func addSubviews() {
         [
             profileImageView,
@@ -87,4 +99,3 @@ final class ProfileViewController: UIViewController {
         
     }
 }
-

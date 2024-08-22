@@ -3,6 +3,7 @@ import UIKit
 final class SplashViewController: UIViewController {
     
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
+    private let profileService = ProfileService()
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -45,6 +46,26 @@ extension SplashViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
-        switchToTabBarController()
+        
+        guard let token = oAuth2TokenStorage.token else {
+            print("token error ")
+            return
+        }
+        fetchProfile(token)
+    }
+        
+        private func fetchProfile(_ token: String) {
+            UIBlockingProgressHUD.show()
+            profileService.fetchProfile(token: token) { result in
+            UIBlockingProgressHUD.dismiss()
+            switch result {
+            case .success:
+                self.switchToTabBarController()
+                print("Success authenticate")
+            case .failure:
+                print("Load profile error")
+                break
+            }
+        }
     }
 }
