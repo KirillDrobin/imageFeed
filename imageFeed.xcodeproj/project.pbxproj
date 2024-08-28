@@ -31,6 +31,8 @@
 		EDC32B942C6E91490020EBA5 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = EDC32B932C6E91490020EBA5 /* ProgressHUD */; };
 		EDC32B962C7490620020EBA5 /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC32B952C7490620020EBA5 /* UIBlockingProgressHUD.swift */; };
 		EDC32B9A2C7499550020EBA5 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC32B992C7499550020EBA5 /* ProfileService.swift */; };
+		EDF083412C7C960B008CCFAA /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF083402C7C960B008CCFAA /* ProfileImageService.swift */; };
+		EDF083442C7DE522008CCFAA /* URLRequestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF083432C7DE520008CCFAA /* URLRequestClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +59,8 @@
 		EDC32B8F2C68DD120020EBA5 /* AuthViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewControllerDelegate.swift; sourceTree = "<group>"; };
 		EDC32B952C7490620020EBA5 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		EDC32B992C7499550020EBA5 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		EDF083402C7C960B008CCFAA /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
+		EDF083432C7DE520008CCFAA /* URLRequestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,7 @@
 				ED241BE32C3EFC460089361C /* ImageList */,
 				ED47787C2C5D5CDA0025AFFC /* Auth */,
 				EDC32B972C7499290020EBA5 /* Services */,
+				EDF083422C7DE48F008CCFAA /* Models */,
 				ED7007502C3AEF37007F54E1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -149,11 +154,20 @@
 		EDC32B972C7499290020EBA5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				EDC32B992C7499550020EBA5 /* ProfileService.swift */,
-				ED273D5C2C62B95C006F51D8 /* OAuth2Service.swift */,
 				EDA9CDA62C765DDE009D330D /* NetworkClient.swift */,
+				EDF083432C7DE520008CCFAA /* URLRequestClient.swift */,
+				ED273D5C2C62B95C006F51D8 /* OAuth2Service.swift */,
+				EDC32B992C7499550020EBA5 /* ProfileService.swift */,
+				EDF083402C7C960B008CCFAA /* ProfileImageService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		EDF083422C7DE48F008CCFAA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,11 +255,13 @@
 				EDC32B962C7490620020EBA5 /* UIBlockingProgressHUD.swift in Sources */,
 				ED973E562C45B0D4008499A6 /* ProfileViewController.swift in Sources */,
 				EDA9CDA72C765DDE009D330D /* NetworkClient.swift in Sources */,
+				EDF083442C7DE522008CCFAA /* URLRequestClient.swift in Sources */,
 				ED273D5D2C62B95C006F51D8 /* OAuth2Service.swift in Sources */,
 				ED731CB02C68C31A00A36919 /* SplashViewController.swift in Sources */,
 				EDC32B9A2C7499550020EBA5 /* ProfileService.swift in Sources */,
 				ED7007532C3AEF37007F54E1 /* AppDelegate.swift in Sources */,
 				ED47787B2C5D5CA20025AFFC /* AuthViewController.swift in Sources */,
+				EDF083412C7C960B008CCFAA /* ProfileImageService.swift in Sources */,
 				ED273D632C669089006F51D8 /* URLSession+data.swift.swift in Sources */,
 				ED4778792C5964A70025AFFC /* Constants.swift in Sources */,
 				EDC32B902C68DD120020EBA5 /* AuthViewControllerDelegate.swift in Sources */,

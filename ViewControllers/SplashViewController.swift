@@ -3,6 +3,7 @@ import UIKit
 final class SplashViewController: UIViewController {
     
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
+    private let profileImageService = ProfileImageService.shared
     private let profileService = ProfileService()
     
     override func viewDidAppear(_ animated: Bool) {
@@ -53,14 +54,23 @@ extension SplashViewController: AuthViewControllerDelegate {
         }
         fetchProfile(token)
     }
-        
-        private func fetchProfile(_ token: String) {
-            UIBlockingProgressHUD.show()
-            profileService.fetchProfile(token: token) { result in
+    
+    private func fetchProfile(_ token: String) {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile(token: token) { result in
             UIBlockingProgressHUD.dismiss()
             switch result {
             case .success:
                 self.switchToTabBarController()
+                self.profileImageService.fetchProfileImageUrl(token: token) { result in
+                    switch result {
+                    case .success:
+                        print("Success avatar load")
+                    case .failure:
+                        print("Load avatar error")
+                        break
+                    }
+                }
                 print("Success authenticate")
             case .failure:
                 print("Load profile error")
@@ -68,4 +78,9 @@ extension SplashViewController: AuthViewControllerDelegate {
             }
         }
     }
+    
+//    private func fetchProfileImageUrl(_ token: String) {
+//
+//        
+//    }
 }

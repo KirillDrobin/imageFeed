@@ -1,41 +1,10 @@
 import Foundation
 
-protocol ProfileLoading {
-    func fetchProfile(token: String, handler: @escaping (Result<ProfileResult, Error>) -> Void)
-}
-
 struct ProfileResult: Codable {
     let username: String
     let firstName: String
     let lastName: String?
     let bio: String?
-}
-
-struct Profile {
-    let username: String
-    let name: String
-    let loginName: String
-    let bio: String?
-    
-    init(result: ProfileResult) {
-        self.username = result.username
-        self.name = "\(result.firstName) + \(String(describing: result.lastName))"
-        self.loginName = "@\(result.username)"
-        self.bio = result.bio
-    }
-}
-
-final class ProfileService: ProfileLoading {
-    
-    static let shared = ProfileService()
-    private(set) var profile: Profile?
-    private var task: URLSessionTask?
-    private var lastToken: String?
-    private let networkClient: NetworkRouting
-    
-    init(networkClient: NetworkRouting = NetworkClient()) {
-        self.networkClient = networkClient
-    }
     
     private enum CodingKeys : String, CodingKey {
         case username = "username"
@@ -43,6 +12,23 @@ final class ProfileService: ProfileLoading {
         case lastName = "last_name"
         case bio = "bio"
     }
+}
+
+struct Profile {
+    let username: String
+    let name: String
+    let bio: String?
+}
+
+final class ProfileService {
+    
+    static let shared = ProfileService()
+    private var task: URLSessionTask?
+    private var lastToken: String?
+    private let networkClient = NetworkClient.shared
+    
+    private(set) var profile: Profile?
+    init() {}
     
     private enum ProfileServiceError: Error {
         case profileLoadError
@@ -62,10 +48,19 @@ final class ProfileService: ProfileLoading {
                 case .success(let data):
                     do {
                         let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
+                        
+                        let profile = Profile(
+                            username: profileResult.username,
+                            name: [profileResult.firstName, profileResult.lastName ?? ""].joined(separator: " "),
+                            bio: profileResult.bio
+                        )
+                        self.profile = profile
+                        
                         handler(.success(profileResult))
                         print("Success profile load: \(profileResult)")
                     } catch {
                         handler(.failure(error))
+                        print("failure")
                     }
                 case .failure(let error):
                     print("Fetch profile error \(error)")
@@ -73,6 +68,32 @@ final class ProfileService: ProfileLoading {
                 }
             }
         }
+        //        networkClient.fetch(request: profileDataRequest) { result in
+        //            DispatchQueue.main.async {
+        //                switch result {
+        //                case .success(let data):
+        //                    do {
+        //                        let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
+        //
+        //                        let profile = Profile(
+        //                            username: profileResult.username,
+        //                            name: [profileResult.firstName, profileResult.lastName ?? ""].joined(separator: " "),
+        //                            bio: profileResult.bio
+        //                        )
+        //                        self.profile = profile
+        //
+        //                        handler(.success(profileResult))
+        //                        print("Success profile load: \(profileResult)")
+        //                    } catch {
+        //                        handler(.failure(error))
+        //                        print("failure")
+        //                    }
+        //                case .failure(let error):
+        //                    print("Fetch profile error \(error)")
+        //                    handler(.failure(error))
+        //                }
+        //            }
+        //        }
     }
 }
 
@@ -93,3 +114,5 @@ private func makeProfileDataRequest(token: String) -> URLRequest? {
     print("URL Request: \(request)")
     return request
 }
+
+

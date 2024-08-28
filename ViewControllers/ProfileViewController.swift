@@ -1,8 +1,12 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    private let profileService = ProfileService.shared
     
+    private let profileService = ProfileService.shared
+    private let oAuth2TokenStorage = OAuth2TokenStorage.shared
+    private let profileImageService = ProfileImageService.shared
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Photo")
@@ -13,7 +17,6 @@ final class ProfileViewController: UIViewController {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-//        label.text = ""
         label.textColor = .ypWhite
         label.font = UIFont.boldSystemFont(ofSize: 23.0)
         return label
@@ -21,7 +24,6 @@ final class ProfileViewController: UIViewController {
     
     private let nickNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "@ekaterina_nov"
         label.textColor = .ypGrey
         label.font = UIFont.systemFont(ofSize: 13.0)
         return label
@@ -29,7 +31,6 @@ final class ProfileViewController: UIViewController {
     
     private let profileDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Hello, world!"
         label.textColor = .ypWhite
         label.font = UIFont.systemFont(ofSize: 13.0)
         return label
@@ -43,23 +44,62 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    //MARK: - viewDidLoad
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
         makeConstraints()
         
-        guard let profile = profileService.profile else {
-            print("No profile found")
+        guard let token = oAuth2TokenStorage.token else {
+            print("token error ")
             return
         }
-        updateProfileDetails(profile: profile)
+        
+        profileService.fetchProfile(token: token) { result in
+            self.updateProfileDetails()
+            self.profileImageService.fetchProfileImageUrl(token: token) { result in
+                switch result {
+                case .success:
+                    print("Success avatar load")
+                case .failure:
+                    print("Load avatar error")
+                    break
+                }
+            }
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default    // 2
+                   .addObserver(
+                       forName: ProfileImageService.didChangeNotification, // 3
+                       object: nil,                                        // 4
+                       queue: .main                                        // 5
+                   ) { [weak self] _ in
+                       guard let self = self else { return }
+                       self.updateAvatar()                                 // 6
+                   }
+               updateAvatar()
+
     }
     
-    func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name
-        nickNameLabel.text = profile.loginName
-        profileDescriptionLabel.text = profile.bio
+    private func updateProfileDetails() {
+        if let profile = profileService.profile {
+            nameLabel.text = profile.name
+            nickNameLabel.text = "@\(profile.username)"
+            profileDescriptionLabel.text = profile.bio
+        } else {
+            print("No profile found")
+        }
     }
+    
+    private func updateAvatar() {                                   // 8
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+    }
+    
     private func addSubviews() {
         [
             profileImageView,
