@@ -1,4 +1,5 @@
 import Foundation
+import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
     static let shared = OAuth2TokenStorage()
@@ -11,12 +12,12 @@ final class OAuth2TokenStorage {
             return token
         }
         set {
-            storage.set(newValue, forKey: Keys.tokenStorage.rawValue)
+            storage.set(newValue ?? "", forKey: Keys.tokenStorage.rawValue)
             print("Token write: \(String(describing: token))")
         }
     }
     
-    private let storage: UserDefaults = .standard
+    private let storage = KeychainWrapper.standard
     
     private enum Keys: String {
         case tokenStorage

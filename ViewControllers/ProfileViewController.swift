@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -7,9 +8,10 @@ final class ProfileViewController: UIViewController {
     private let profileImageService = ProfileImageService.shared
     
     private var profileImageServiceObserver: NSObjectProtocol?
+    
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Photo")
+        imageView.image = UIImage(named: "placeholder.jpeg")
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -36,7 +38,7 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
-    private var exitButton: UIButton = {
+    private let exitButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "ipad.and.arrow.forward")!, for: .normal)
         button.addTarget(ProfileViewController.self, action: #selector(didTapExitProfileButton), for: .touchUpInside)
@@ -56,30 +58,31 @@ final class ProfileViewController: UIViewController {
             return
         }
         
-        profileService.fetchProfile(token: token) { result in
-            self.updateProfileDetails()
-            self.profileImageService.fetchProfileImageUrl(token: token) { result in
-                switch result {
-                case .success:
-                    print("Success avatar load")
-                case .failure:
-                    print("Load avatar error")
-                    break
+        DispatchQueue.main.async {
+            self.profileService.fetchProfile(token: token) { result in
+                self.updateProfileDetails()
+                self.profileImageService.fetchProfileImageUrl(token: token) { result in
+                    switch result {
+                    case .success:
+                        print("Success avatar load")
+                    case .failure:
+                        print("Load avatar error")
+                        break
+                    }
                 }
             }
+            
+            self.profileImageServiceObserver = NotificationCenter.default
+                .addObserver(
+                    forName: ProfileImageService.didChangeNotification,
+                    object: nil,
+                    queue: .main
+                ) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.updateAvatar()
+                }
+            self.updateAvatar()
         }
-        
-        profileImageServiceObserver = NotificationCenter.default    // 2
-                   .addObserver(
-                       forName: ProfileImageService.didChangeNotification, // 3
-                       object: nil,                                        // 4
-                       queue: .main                                        // 5
-                   ) { [weak self] _ in
-                       guard let self = self else { return }
-                       self.updateAvatar()                                 // 6
-                   }
-               updateAvatar()
-
     }
     
     private func updateProfileDetails() {
@@ -92,12 +95,32 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    private func updateAvatar() {                                   // 8
+    private func updateAvatar() {
         guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
+            let profileImageURL = ProfileImageService.shared.avatarURL
+                
         else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+        let imageView = profileImageView
+        let imageUrl = URL(string: profileImageURL)
+        imageView.kf.setImage(with: imageUrl)
+        let processor = RoundCornerImageProcessor(cornerRadius: 16)
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: imageUrl,
+                              placeholder: UIImage(named: "placeholder.jpeg"),
+                              options: [.processor(processor)]) { result in
+            
+            switch result {
+            case .success(let value):
+                print("Kingfisher success")
+                print(value.image)
+                print(value.cacheType)
+                print(value.source)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        let cache = ImageCache.default
+        cache.memoryStorage.config.totalCostLimit = 50 * 1024 * 1024
     }
     
     private func addSubviews() {

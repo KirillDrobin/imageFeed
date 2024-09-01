@@ -8,49 +8,45 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
-    private let networkClient = NetworkClient.shared
+    
+    //    private let networkClient = NetworkClient.shared
+    private var task: URLSessionTask?
     private(set) var avatarURL: String?
     private init() {}
     
     func fetchProfileImageUrl(token: String, handler: @escaping (Result<UserResult, any Error>) -> Void) {
         
-        guard let userDataRequest = makeUserDataRequest(token: token)
+        guard let userDataRequest = makeUserDataRequest(token: token),
+              task == nil
         else {
             print("Avatar URL request error")
             return
         }
         
-        networkClient.fetch(request: userDataRequest) { (result: Result<UserResult, Error>) in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let data):
-                    let decoder = JSONDecoder()
-                    decoder.keyDecodingStrategy = .convertFromSnakeCase
-                    do {
-                        let userResult = try decoder.decode(UserResult.self, from: data)
-                        let avatarURL = userResult.profileImage["small"]
-                        
-                        self.avatarURL = avatarURL
-                        
-                        handler(.success(userResult))
-                        
-                        NotificationCenter.default
-                            .post(
-                                name: ProfileImageService.didChangeNotification,
-                                object: self,
-                                userInfo: ["URL": avatarURL ?? "No avatar URL"])
-                        
-                        print("Success avatar URL load: \(userResult)")
-                    } catch {
-                        handler(.failure(error))
-                        print("Load avatar URL failure")
-                    }
-                case .failure(let error):
-                    print("Avatar error \(error)")
-                    handler(.failure(error))
-                }
+        let task = URLSession.shared.objectTask(for: userDataRequest) { [weak self] (result: Result<UserResult, Error>) in
+            guard let self else { preconditionFailure("") }
+            self.task = nil
+            switch result {
+            case .success(let data):
+                let avatarURL = data.profileImage["small"]
+                
+                self.avatarURL = avatarURL
+                
+                handler(.success(data))
+                NotificationCenter.default
+                    .post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": avatarURL ?? "No avatar URL"])
+                
+            case .failure(let error):
+                print("Avatar URL load error")
+                handler(.failure(error))
             }
+            
         }
+        self.task = task
+        task.resume()
     }
 }
 

@@ -17,7 +17,7 @@ final class OAuth2Service {
     private var task: URLSessionTask?
     private var lastCode: String?
     
-    func fetchOAuthToken(code: String, completion: @escaping (_ result: Result<String, Error>) -> Void) {
+    func fetchOAuthToken(code: String, handler: @escaping (_ result: Result<String, Error>) -> Void) {
         guard let tokenRequest = makeOAuthTokenRequest(code: code)
         else {
             return
@@ -28,44 +28,29 @@ final class OAuth2Service {
             if lastCode != code {
                 task?.cancel()
             } else {
-                completion(.failure(AuthServiceError.invalidRequest))
+                handler(.failure(AuthServiceError.invalidRequest))
                 return
             }
         } else {
             if lastCode == code {
-                completion(.failure(AuthServiceError.invalidRequest))
+                handler(.failure(AuthServiceError.invalidRequest))
                 return
             }
         }
         lastCode = code
         
-        let task = URLSession.shared.data(for: tokenRequest) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let data):
-                    let decoder = JSONDecoder()
-                    decoder.keyDecodingStrategy = .convertFromSnakeCase
-                    do {
-                        let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                        UIBlockingProgressHUD.dismiss()
-                        
-                        self.task = nil
-                        self.lastCode = nil
-                    
-                        print("Success token: \(response.accessToken)")
-                        completion(.success(response.accessToken))
-                    } catch {
-                        
-                        print("Error token: \(completion(.failure(error)))")
-                        
-                        completion(.failure(error))
-                    }
-                case .failure(let error):
-                    
-                    print("Error: \(completion(.failure(error)))")
-                    
-                    completion(.failure(error))
-                }
+        let task = URLSession.shared.objectTask(for: tokenRequest) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self else { preconditionFailure("") }
+            self.task = nil
+            self.lastCode = nil
+            switch result {
+            case .success(let data):
+                UIBlockingProgressHUD.dismiss()
+                print("Success token: \(data.accessToken)")
+                handler(.success(data.accessToken))
+            case .failure(let error):
+                print("Error: \(handler(.failure(error)))")
+                handler(.failure(error))
             }
         }
         self.task = task
@@ -79,7 +64,7 @@ private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         preconditionFailure("Unable to construct baseURL")
     }
     guard let url = URL(
-        string: "/oauth/token"
+        string: "/oauth/token" // MARK: удалить 1
         + "?client_id=\(Constants.accessKey)"
         + "&&client_secret=\(Constants.secretKey)"
         + "&&redirect_uri=\(Constants.redirectURI)"
