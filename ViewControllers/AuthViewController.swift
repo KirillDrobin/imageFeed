@@ -1,12 +1,16 @@
 import UIKit
+import ProgressHUD
 
 final class AuthViewController: UIViewController {
+    // MARK: - Private Properties
     private let oAuth2Service = OAuth2Service.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
-    
-    var delegate: AuthViewControllerDelegate?
     private let ShowWebViewSegueIdentifier = "ShowWebView"
     
+    // MARK: - Public Properties
+    var delegate: AuthViewControllerDelegate?
+    
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ShowWebViewSegueIdentifier {
             guard
@@ -19,15 +23,23 @@ final class AuthViewController: UIViewController {
     }
 }
 
+// MARK: - extension AuthViewController
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true)
+        UIBlockingProgressHUD.show()
         oAuth2Service.fetchOAuthToken(code: code) { [self] result in
             switch result {
             case .success(let token):
                 oAuth2TokenStorage.token = token
                 delegate?.didAuthenticate(self)
             case .failure(_):
+                let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
+                present(alert, animated: true)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+                    alert.dismiss(animated: false)
+                }))
+                present(alert, animated: true)
                 print("Authorization error")
             }
         }
