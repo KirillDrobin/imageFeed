@@ -1,15 +1,11 @@
 import Foundation
 
-enum NetworkError: Error {
-    case httpStatusCode(Int)
-    case urlRequestError(Error)
-    case urlSessionError
-}
-
 extension URLSession {
     
+    // MARK: - Static Properties
     static let decoder: JSONDecoder = .init()
     
+    // MARK: - objectTask func
     func objectTask<T: Codable>(for request: URLRequest, completion: @escaping(Result<T,Error>) -> Void) -> URLSessionTask {
         let decoder = URLSession.decoder
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -31,6 +27,7 @@ extension URLSession {
         return task
     }
     
+    // MARK: - data func
     func data(for request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
         let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -58,4 +55,11 @@ extension URLSession {
         })
         return task
     }
+}
+
+// MARK: - enum NetworkError
+enum NetworkError: Error {
+    case httpStatusCode(Int)
+    case urlRequestError(Error)
+    case urlSessionError
 }

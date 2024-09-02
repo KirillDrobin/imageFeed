@@ -2,6 +2,7 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
+    // MARK: - Private Properties
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let profileService = ProfileService()
@@ -14,6 +15,7 @@ final class SplashViewController: UIViewController {
         return imageView
     }()
     
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
@@ -30,12 +32,11 @@ final class SplashViewController: UIViewController {
         }
     }
     
+    // MARK: - Private Methods
     private func addSubviews() {
-        [
-             logoImageView
-        ].forEach {
+        [logoImageView].forEach { [weak self] in
             $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
+            self?.view.addSubview($0)
         }
     }
     
@@ -68,9 +69,10 @@ final class SplashViewController: UIViewController {
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBarController
-    } 
+    }
 }
 
+// MARK: - extension SplashViewController
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)

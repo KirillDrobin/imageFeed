@@ -1,21 +1,9 @@
 import Foundation
 
-struct ProfileResult: Codable {
-    let username: String
-    let firstName: String
-    let lastName: String?
-    let bio: String?
-}
-
-struct Profile {
-    let username: String
-    let name: String
-    let bio: String?
-}
-
 final class ProfileService {
-    
     static let shared = ProfileService()
+    
+    // MARK: - Private Properties
     private var task: URLSessionTask?
     private var lastToken: String?
     
@@ -26,6 +14,7 @@ final class ProfileService {
         case profileLoadError
     }
     
+    // MARK: - fetchProfile func
     func fetchProfile(token: String, handler: @escaping (Result<ProfileResult, any Error>) -> Void) {
         
         guard let profileDataRequest = makeProfileDataRequest(token: token),
@@ -57,6 +46,7 @@ final class ProfileService {
     }
 }
 
+// MARK: - makeProfileDataRequest private func
 private func makeProfileDataRequest(token: String) -> URLRequest? {
     guard let baseURL = Constants.defaultBaseURL
     else {
@@ -75,4 +65,16 @@ private func makeProfileDataRequest(token: String) -> URLRequest? {
     return request
 }
 
+// MARK: - Models
+struct ProfileResult: Codable {
+    let username: String
+    let firstName: String
+    let lastName: String?
+    let bio: String?
+}
 
+struct Profile {
+    let username: String
+    let name: String
+    let bio: String?
+}

@@ -3,10 +3,10 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
+    // MARK: - Private Properties
     private let profileService = ProfileService.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
-    
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private lazy var profileImageView: UIImageView = {
@@ -46,8 +46,7 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
-    //MARK: - viewDidLoad
-    
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
@@ -85,6 +84,7 @@ final class ProfileViewController: UIViewController {
         }
     }
     
+    // MARK: - Private Methods
     private func updateProfileDetails() {
         if let profile = profileService.profile {
             nameLabel.text = profile.name
@@ -130,9 +130,9 @@ final class ProfileViewController: UIViewController {
             nickNameLabel,
             profileDescriptionLabel,
             exitButton
-        ].forEach {
+        ].forEach { [weak self] in
             $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
+            self?.view.addSubview($0)
         }
     }
     

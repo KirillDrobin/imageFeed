@@ -2,12 +2,15 @@ import UIKit
 import ProgressHUD
 
 final class AuthViewController: UIViewController {
+    // MARK: - Private Properties
     private let oAuth2Service = OAuth2Service.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
-    
-    var delegate: AuthViewControllerDelegate?
     private let ShowWebViewSegueIdentifier = "ShowWebView"
     
+    // MARK: - Public Properties
+    var delegate: AuthViewControllerDelegate?
+    
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ShowWebViewSegueIdentifier {
             guard
@@ -20,6 +23,7 @@ final class AuthViewController: UIViewController {
     }
 }
 
+// MARK: - extension AuthViewController
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true)

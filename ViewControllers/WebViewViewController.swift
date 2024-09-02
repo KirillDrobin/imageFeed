@@ -1,18 +1,16 @@
 import UIKit
 import WebKit
 
-enum WebViewConstants {
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-}
-
 final class WebViewViewController: UIViewController {
-    @IBOutlet private var webView: WKWebView!
-    
-    @IBOutlet private var progressView: UIProgressView!
-    
-    weak var delegate: WebViewViewControllerDelegate?
+    // MARK: - Properties
     private var estimatedProgressObservation: NSKeyValueObservation?
+    weak var delegate: WebViewViewControllerDelegate?
     
+    // MARK: - IB Outlets
+    @IBOutlet private var webView: WKWebView!
+    @IBOutlet private var progressView: UIProgressView!
+
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
@@ -26,14 +24,15 @@ final class WebViewViewController: UIViewController {
                  self.updateProgress()
              })
     }
-
+    
+    // MARK: - Private Methods
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     
     private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
+        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
             print("unsplashAuthorizeURLString error")
             return
         }
@@ -58,6 +57,7 @@ final class WebViewViewController: UIViewController {
     }
 }
 
+// MARK: - extension WebViewViewController
 extension WebViewViewController: WKNavigationDelegate {
     
     func code(from navigationAction: WKNavigationAction) -> String? {

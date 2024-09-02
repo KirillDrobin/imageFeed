@@ -1,6 +1,7 @@
 import UIKit
 final class SingleImageViewController: UIViewController {
     
+    // MARK: - Public Properties
     var image: UIImage? {
         didSet {
             guard isViewLoaded, let image else {
@@ -12,10 +13,12 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
+    // MARK: - IB Outlets
     @IBOutlet private var imageView: UIImageView!
     
     @IBOutlet private var singleImageScrollView: UIScrollView!
     
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,6 +33,7 @@ final class SingleImageViewController: UIViewController {
         rescaleAndCenterImageInScrollView(image: image)
     }
     
+    // MARK: - Private Methods
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = singleImageScrollView.minimumZoomScale
         let maxZoomScale = singleImageScrollView.maximumZoomScale
@@ -47,6 +51,7 @@ final class SingleImageViewController: UIViewController {
         singleImageScrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
+    // MARK: - IB Action
     @IBAction private func backward(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -58,6 +63,7 @@ final class SingleImageViewController: UIViewController {
     }
 }
 
+// MARK: - extension SingleImageViewController
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView

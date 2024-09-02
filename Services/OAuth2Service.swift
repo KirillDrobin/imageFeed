@@ -2,21 +2,16 @@ import Foundation
 import WebKit
 import ProgressHUD
 
-enum AuthServiceError: Error {
-    case invalidRequest
-}
-
-struct OAuthTokenResponseBody: Codable {
-    var accessToken: String
-}
-
 final class OAuth2Service {
-    static let shared = OAuth2Service()
-    private init() {}
     
+    static let shared = OAuth2Service()
+    
+    // MARK: - Private Properties
+    private init() {}
     private var task: URLSessionTask?
     private var lastCode: String?
     
+    // MARK: - fetchOAuthToken func
     func fetchOAuthToken(code: String, handler: @escaping (_ result: Result<String, Error>) -> Void) {
         guard let tokenRequest = makeOAuthTokenRequest(code: code)
         else {
@@ -58,13 +53,14 @@ final class OAuth2Service {
     }
 }
 
+// MARK: - makeOAuthTokenRequest private func
 private func makeOAuthTokenRequest(code: String) -> URLRequest? {
-    guard let baseURL = URL(string: "https://unsplash.com")
+    guard let baseURL = Constants.defaultURL
     else {
         preconditionFailure("Unable to construct baseURL")
     }
     guard let url = URL(
-        string: "/oauth/token" // MARK: удалить 1
+        string: "/oauth/token"
         + "?client_id=\(Constants.accessKey)"
         + "&&client_secret=\(Constants.secretKey)"
         + "&&redirect_uri=\(Constants.redirectURI)"
@@ -78,4 +74,13 @@ private func makeOAuthTokenRequest(code: String) -> URLRequest? {
     request.httpMethod = "POST"
     print("Token request: \(request)")
     return request
+}
+
+// MARK: - Models
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
+struct OAuthTokenResponseBody: Codable {
+    var accessToken: String
 }

@@ -1,19 +1,15 @@
 import Foundation
 
-struct UserResult: Codable {
-    let profileImage: Dictionary<String, String>
-}
-
 final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
-    
-    //    private let networkClient = NetworkClient.shared
+    // MARK: - Private Properties
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
     private init() {}
     
+    // MARK: - fetchProfileImageUrl func
     func fetchProfileImageUrl(token: String, handler: @escaping (Result<UserResult, any Error>) -> Void) {
         
         guard let userDataRequest = makeUserDataRequest(token: token),
@@ -50,6 +46,7 @@ final class ProfileImageService {
     }
 }
 
+// MARK: - makeUserDataRequest private func
 private func makeUserDataRequest(token: String) -> URLRequest? {
     let profileService = ProfileService.shared
     guard let profile = profileService.profile else {
@@ -74,4 +71,9 @@ private func makeUserDataRequest(token: String) -> URLRequest? {
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     print("Avatar URL Request: \(request)")
     return request
+}
+
+// MARK: - Models
+struct UserResult: Codable {
+    let profileImage: Dictionary<String, String>
 }
