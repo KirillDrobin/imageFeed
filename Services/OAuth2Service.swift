@@ -80,7 +80,3 @@ private func makeOAuthTokenRequest(code: String) -> URLRequest? {
 enum AuthServiceError: Error {
     case invalidRequest
 }
-
-struct OAuthTokenResponseBody: Codable {
-    var accessToken: String
-}
