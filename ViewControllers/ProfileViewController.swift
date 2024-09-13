@@ -7,6 +7,8 @@ final class ProfileViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
+    private let splashViewController = SplashViewController.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private lazy var profileImageView: UIImageView = {
@@ -41,7 +43,7 @@ final class ProfileViewController: UIViewController {
     private let exitButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "ipad.and.arrow.forward")!, for: .normal)
-        button.addTarget(ProfileViewController.self, action: #selector(didTapExitProfileButton), for: .touchUpInside)
+        button.addTarget(ProfileViewController.self, action: #selector(exit), for: .touchUpInside)
         button.tintColor = .ypRed
         return button
     }()
@@ -51,7 +53,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         makeConstraints()
-        
+        UIBlockingProgressHUD.show()
         guard let token = oAuth2TokenStorage.token else {
             print("token error ")
             return
@@ -102,16 +104,15 @@ final class ProfileViewController: UIViewController {
         else { return }
         let imageView = profileImageView
         let imageUrl = URL(string: profileImageURL)
-        imageView.kf.setImage(with: imageUrl)
         let processor = RoundCornerImageProcessor(cornerRadius: 16)
         imageView.kf.indicatorType = .activity
         imageView.kf.setImage(with: imageUrl,
-                              placeholder: UIImage(named: "placeholder.jpeg"),
+                              placeholder: UIImage(named: "Rectangle 169"),
                               options: [.processor(processor)]) { result in
             
             switch result {
             case .success(let value):
-                print("Kingfisher success")
+                print("Kingfisher avatar success")
                 print(value.image)
                 print(value.cacheType)
                 print(value.source)
@@ -120,7 +121,7 @@ final class ProfileViewController: UIViewController {
             }
         }
         let cache = ImageCache.default
-        cache.memoryStorage.config.totalCostLimit = 50 * 1024 * 1024
+        cache.memoryStorage.config.totalCostLimit = 300 * 1024 * 1024
     }
     
     private func addSubviews() {
@@ -129,7 +130,7 @@ final class ProfileViewController: UIViewController {
             nameLabel,
             nickNameLabel,
             profileDescriptionLabel,
-            exitButton
+            exitButton,
         ].forEach { [weak self] in
             $0.translatesAutoresizingMaskIntoConstraints = false
             self?.view.addSubview($0)
@@ -157,8 +158,12 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    @objc
-    private func didTapExitProfileButton() {
-        
+@objc
+    func exit() {
+        print("EXIT")
     }
+//    private func didTapExitProfileButton() {
+//        profileLogoutService.logout()
+//        splashViewController.switchToAuthViewController()
+//    }
 }
