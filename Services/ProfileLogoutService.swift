@@ -9,32 +9,36 @@ import Foundation
 import WebKit
 
 final class ProfileLogoutService {
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let imagesListService = ImagesListService.shared
+    // MARK: - Private Properties
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
+    private let splashViewController = SplashViewController.shared
     
     static let shared = ProfileLogoutService()
     
+    // MARK: - Initializers
     private init() {}
     
+    // MARK: - Methods
     func logout() {
+        oAuth2TokenStorage.token = nil
         cleanCookies()
-        cleanProfile()
-    }
+        switchToSplashViewController()
+     }
     
     private func cleanCookies() {
-        // Очищаем все куки из хранилища
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        // Запрашиваем все данные из локального хранилища
         WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            // Массив полученных записей удаляем из хранилища
             records.forEach { record in
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
             }
         }
     }
-    private func cleanProfile() {
-        oAuth2TokenStorage.token = " "
+    
+    private func switchToSplashViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        window.rootViewController = SplashViewController()
     }
 }

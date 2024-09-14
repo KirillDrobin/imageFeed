@@ -2,16 +2,13 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     weak var delegate: ImagesListCellDelegate?
-        
+    // MARK: - IB Outlets
     @IBOutlet var cellImage: UIImageView!
     @IBOutlet var likeButton: UIButton!
     @IBOutlet var dateLabel: UILabel!
-    @IBOutlet var gradientView: UIView!
+    @IBOutlet private var gradientView: UIView!
     
-    @IBAction private func likeButtonClicked(_ sender: Any) {
-        delegate?.imageListCellDidTapLike(self)
-    }
-    
+    // MARK: - View Life Cycles
     override func awakeFromNib() {
         super.awakeFromNib()
         gradient()
@@ -22,6 +19,12 @@ final class ImagesListCell: UITableViewCell {
         cellImage.kf.cancelDownloadTask()
     }
     
+    // MARK: - IB Action
+    @IBAction private func likeButtonClicked(_ sender: Any) {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
+    // MARK: - Methods
     private func gradient() {
         let gradient = CAGradientLayer()
         gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
@@ -31,13 +34,8 @@ final class ImagesListCell: UITableViewCell {
     }
     
     func setIsLiked(like: Bool) {
-        var likeImage = UIImage()
-        if like == true {
-            likeImage = UIImage(named: "Like Active") ?? UIImage()
-        } else {
-            likeImage = UIImage(named: "Like No Active") ?? UIImage()
-        }
-        
+        let likeImage = like ? UIImage(named: "Like Active") : UIImage(named: "Like No Active")
+        print("Like is \(String(describing: likeImage))")
         likeButton.setImage(likeImage, for: .normal)
     }
 }

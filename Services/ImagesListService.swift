@@ -8,15 +8,18 @@
 import Foundation
 
 final class ImagesListService {
+    // MARK: - Private Properties
     private(set) var photos: [Photo] = []
     private var task: URLSessionTask?
     private var lastLoadedPage = 1
     
+    // MARK: - Static Properties
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceProviderDidChange")
     
+    // MARK: - Public Methods
     func fetchPhotosNextPage(handler: @escaping (Result<[PhotoResult], any Error>) -> Void) {
-
+        
         if task != nil {
             task?.cancel()
         }
@@ -52,10 +55,10 @@ final class ImagesListService {
                     print("Photos count: \(photos.count)")
                     print("LastLoadedPage: \(String(describing: lastLoadedPage))")
                 }
-
+                
                 handler(.success(data))
                 lastLoadedPage += 1
-
+                
             case .failure(let error):
                 print("Photo responce error")
                 handler(.failure(error))
@@ -66,6 +69,11 @@ final class ImagesListService {
     }
     
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Bool, Error>) -> Void) {
+        
+        if task != nil {
+            task?.cancel()
+        }
+        
         let oAuth2TokenStorage = OAuth2TokenStorage.shared
         guard let token = oAuth2TokenStorage.token
         else {
@@ -86,18 +94,22 @@ final class ImagesListService {
         var request = URLRequest(url: url)
         
         if isLike == true {
-            request.httpMethod = "POST"}
+            request.httpMethod = "POST"
+        }
         else {
             request.httpMethod = "DELETE"
         }
+        
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         print("changeLike URL Request: \(request)")
-             
+        
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ChangeLike, Error>) in
             guard let self else { preconditionFailure("") }
             switch result {
-            case .success(_):
+            case .success(let photoLike):
                 DispatchQueue.main.async {
+                    let like = photoLike.photo
+                    let likeResult = like.likedByUser
                     if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
                         let photo = self.photos[index]
                         let newPhoto = Photo(id: photo.id,
@@ -108,11 +120,13 @@ final class ImagesListService {
                                              largeImageURL: photo.largeImageURL,
                                              isLiked: !photo.isLiked)
                         self.photos[index] = newPhoto
+                        print("photos array after changeLike: \(self.photos[index])")
                     }
-                    print("Change like success")
+                    completion(.success(likeResult))
+                    print("Like pars success: \(likeResult)")
                 }
             case .failure(_):
-                print("Change like error")
+                print("changeLike error")
             }
         }
         task.resume()
@@ -120,7 +134,7 @@ final class ImagesListService {
     }
 }
 
-// MARK: - makePhotoRequest private func
+// MARK: - Private Methods
 private func makePhotoRequest(page: Int) -> URLRequest? {
     
     let oAuth2TokenStorage = OAuth2TokenStorage.shared

@@ -21,7 +21,6 @@ final class SingleImageViewController: UIViewController {
     private func downloadLargePhoto() {
         UIBlockingProgressHUD.show()
         
-        
         imageView.kf.setImage(with: fullImageURL) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             

@@ -89,6 +89,7 @@ extension ImagesListViewController {
                                    placeholder: UIImage(named: "Rectangle 169"),
                                    options: [.processor(processor)])
         
+        cell.setIsLiked(like: photos[indexPath.row].isLiked)
         cell.dateLabel.text = photos[indexPath.row].createdAt
         cell.delegate = self
     }
@@ -150,15 +151,16 @@ extension ImagesListViewController: ImagesListCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self else { return }
             switch result {
-            case .success(let isLiked):
-                DispatchQueue.main.async {
-                    self.photos[indexPath.row].isLiked = isLiked
-                    cell.setIsLiked(like: isLiked)
-                    UIBlockingProgressHUD.dismiss()
-                }
+            case .success:
+                self.photos = self.imagesListService.photos
+                cell.setIsLiked(like: self.photos[indexPath.row].isLiked)
+                UIBlockingProgressHUD.dismiss()
+                print("Change like ok")
             case .failure:
+                print("No like change")
                 UIBlockingProgressHUD.dismiss()
             }
         }

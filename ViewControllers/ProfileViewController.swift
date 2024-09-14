@@ -8,7 +8,7 @@ final class ProfileViewController: UIViewController {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
-    private let splashViewController = SplashViewController.shared
+
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private lazy var profileImageView: UIImageView = {
@@ -43,7 +43,7 @@ final class ProfileViewController: UIViewController {
     private let exitButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "ipad.and.arrow.forward")!, for: .normal)
-        button.addTarget(ProfileViewController.self, action: #selector(exit), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapExitProfileButton), for: .touchUpInside)
         button.tintColor = .ypRed
         return button
     }()
@@ -159,11 +159,8 @@ final class ProfileViewController: UIViewController {
     }
     
 @objc
-    func exit() {
-        print("EXIT")
+    private func didTapExitProfileButton() {
+        profileLogoutService.logout()
     }
-//    private func didTapExitProfileButton() {
-//        profileLogoutService.logout()
-//        splashViewController.switchToAuthViewController()
-//    }
 }
+
