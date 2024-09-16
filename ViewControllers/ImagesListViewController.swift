@@ -89,8 +89,13 @@ extension ImagesListViewController {
                                    placeholder: UIImage(named: "Rectangle 169"),
                                    options: [.processor(processor)])
         
+        guard let date = photos[indexPath.row].createdAt
+        else
+        { return
+        }
+        
         cell.setIsLiked(like: photos[indexPath.row].isLiked)
-        cell.dateLabel.text = photos[indexPath.row].createdAt
+        cell.dateLabel.text = dateFormatter(date: date)
         cell.delegate = self
     }
     
@@ -120,6 +125,14 @@ extension ImagesListViewController {
                 print("")
             }
         }
+    }
+    
+    private func dateFormatter(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMMM yyyy"
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        let convertDate = dateFormatter.string(from: date)
+        return convertDate
     }
 }
 

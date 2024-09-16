@@ -4,7 +4,6 @@
 //
 //  Created by Кирилл Дробин on 02.09.2024.
 //
-
 import Foundation
 
 final class ImagesListService {
@@ -36,16 +35,15 @@ final class ImagesListService {
             self.task = nil
             switch result {
             case .success(let data):
-                NotificationCenter.default
-                    .post(
-                        name: ImagesListService.didChangeNotification,
-                        object: self,
-                        userInfo: ["Photo": photos])
-                
                 for i in data {
+                    guard let createdAtData = i.createdAt
+                    else {
+                        print("createdAt data is missing")
+                        return
+                    }
                     photos.append(Photo(id: i.id,
                                         size: (CGSize(width: i.width, height: i.height)),
-                                        createdAt: dateFormatter(date: i.createdAt),
+                                        createdAt: dateFormatter().date(from: createdAtData),
                                         welcomeDescription: i.description,
                                         thumbImageURL: i.urls.thumb,
                                         largeImageURL: i.urls.full,
@@ -56,9 +54,14 @@ final class ImagesListService {
                     print("LastLoadedPage: \(String(describing: lastLoadedPage))")
                 }
                 
+                NotificationCenter.default
+                    .post(
+                        name: ImagesListService.didChangeNotification,
+                        object: self,
+                        userInfo: ["Photo": data])
+                
                 handler(.success(data))
                 lastLoadedPage += 1
-                
             case .failure(let error):
                 print("Photo responce error")
                 handler(.failure(error))
@@ -75,15 +78,13 @@ final class ImagesListService {
         }
         
         let oAuth2TokenStorage = OAuth2TokenStorage.shared
-        guard let token = oAuth2TokenStorage.token
-        else {
-            preconditionFailure("Token for photo error")
-        }
-        
-        guard let baseURL = Constants.defaultBaseURL
+        guard
+            let token = oAuth2TokenStorage.token,
+            let baseURL = Constants.defaultBaseURL
         else {
             preconditionFailure("Unable to construct baseURL for like responce")
         }
+        
         guard let url = URL(
             string: "/photos/\(photoId)/like",
             relativeTo: baseURL
@@ -93,12 +94,7 @@ final class ImagesListService {
         
         var request = URLRequest(url: url)
         
-        if isLike == true {
-            request.httpMethod = "POST"
-        }
-        else {
-            request.httpMethod = "DELETE"
-        }
+        request.httpMethod = isLike ? "POST" : "DELETE"
         
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         print("changeLike URL Request: \(request)")
@@ -139,20 +135,18 @@ private func makePhotoRequest(page: Int) -> URLRequest? {
     
     let oAuth2TokenStorage = OAuth2TokenStorage.shared
     
-    guard let baseURL = Constants.defaultBaseURL
+    guard
+        let token = oAuth2TokenStorage.token,
+        let baseURL = Constants.defaultBaseURL
     else {
         preconditionFailure("Unable to construct baseURL")
     }
+    
     guard let url = URL(
         string: "/photos?page=\(page)",
         relativeTo: baseURL
     ) else {
         preconditionFailure("Unable to construct url")
-    }
-    
-    guard let token = oAuth2TokenStorage.token
-    else {
-        preconditionFailure("Token for photo error")
     }
     
     var request = URLRequest(url: url)
@@ -162,14 +156,6 @@ private func makePhotoRequest(page: Int) -> URLRequest? {
     return request
 }
 
-private func dateFormatter(date: String) -> String {
-    let dateFormatter = ISO8601DateFormatter()
-    guard let date = dateFormatter.date(from: date)
-    else {return ""}
-    let dateFormatter2 = DateFormatter()
-    dateFormatter2.dateStyle = .long
-    dateFormatter2.timeStyle = .none
-    dateFormatter2.locale = Locale(identifier: "ru_RU")
-    let convertDate = dateFormatter2.string(from: date)
-    return convertDate
+private func dateFormatter() -> ISO8601DateFormatter {
+    return ISO8601DateFormatter()
 }

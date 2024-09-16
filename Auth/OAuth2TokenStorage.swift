@@ -17,7 +17,7 @@ final class OAuth2TokenStorage {
         }
     }
     
-    private let storage = KeychainWrapper.standard
+    private let storage = UserDefaults.standard
     
     private enum Keys: String {
         case tokenStorage

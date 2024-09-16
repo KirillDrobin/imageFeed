@@ -5,7 +5,7 @@
 //  Created by Кирилл Дробин on 12.09.2024.
 //
 
-import Foundation
+import UIKit
 import WebKit
 
 final class ProfileLogoutService {

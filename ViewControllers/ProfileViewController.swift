@@ -8,13 +8,12 @@ final class ProfileViewController: UIViewController {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
-
+    
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "placeholder.jpeg")
-        imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -42,7 +41,7 @@ final class ProfileViewController: UIViewController {
     
     private let exitButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "ipad.and.arrow.forward")!, for: .normal)
+        button.setImage(UIImage(systemName: "ipad.and.arrow.forward"), for: .normal)
         button.addTarget(self, action: #selector(didTapExitProfileButton), for: .touchUpInside)
         button.tintColor = .ypRed
         return button
@@ -51,6 +50,8 @@ final class ProfileViewController: UIViewController {
     // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypBlack
+        profileImageView.backgroundColor = .clear
         addSubviews()
         makeConstraints()
         UIBlockingProgressHUD.show()
@@ -59,10 +60,10 @@ final class ProfileViewController: UIViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            self.profileService.fetchProfile(token: token) { result in
-                self.updateProfileDetails()
-                self.profileImageService.fetchProfileImageUrl(token: token) { result in
+        DispatchQueue.main.async { [weak self] in
+            self?.profileService.fetchProfile(token: token) { [weak self] result in
+                self?.updateProfileDetails()
+                self?.profileImageService.fetchProfileImageUrl(token: token) { result in
                     switch result {
                     case .success:
                         print("Success avatar load")
@@ -73,7 +74,7 @@ final class ProfileViewController: UIViewController {
                 }
             }
             
-            self.profileImageServiceObserver = NotificationCenter.default
+            self?.profileImageServiceObserver = NotificationCenter.default
                 .addObserver(
                     forName: ProfileImageService.didChangeNotification,
                     object: nil,
@@ -82,7 +83,7 @@ final class ProfileViewController: UIViewController {
                     guard let self = self else { return }
                     self.updateAvatar()
                 }
-            self.updateAvatar()
+            self?.updateAvatar()
         }
     }
     
@@ -104,7 +105,7 @@ final class ProfileViewController: UIViewController {
         else { return }
         let imageView = profileImageView
         let imageUrl = URL(string: profileImageURL)
-        let processor = RoundCornerImageProcessor(cornerRadius: 16)
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
         imageView.kf.indicatorType = .activity
         imageView.kf.setImage(with: imageUrl,
                               placeholder: UIImage(named: "Rectangle 169"),
@@ -158,9 +159,19 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-@objc
+    @objc
     private func didTapExitProfileButton() {
-        profileLogoutService.logout()
+        let alert = UIAlertController(title: "Пока-пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
+        let alertYes = UIAlertAction(title: "Да", style: .default, handler: { [weak self] action in
+            self?.profileLogoutService.logout()
+        })
+        let alertNo = UIAlertAction(title: "Нет", style: .default, handler: { action in
+            alert.dismiss(animated: true)
+        })
+        
+        alert.addAction(alertYes)
+        alert.addAction(alertNo)
+        alert.preferredAction = alertNo
+        present(alert, animated: true)
     }
 }
-

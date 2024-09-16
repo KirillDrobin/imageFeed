@@ -4,7 +4,7 @@ import Kingfisher
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Public Properties
-    var fullImageURL: URL? = nil
+    var fullImageURL: URL?
     
     // MARK: - IB Outlets
     @IBOutlet private var imageView: UIImageView!
