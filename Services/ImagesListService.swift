@@ -11,6 +11,9 @@ final class ImagesListService {
     private(set) var photos: [Photo] = []
     private var task: URLSessionTask?
     private var lastLoadedPage = 1
+    private lazy var dateFormatter: ISO8601DateFormatter = {
+        return ISO8601DateFormatter()
+    }()
     
     // MARK: - Static Properties
     static let shared = ImagesListService()
@@ -43,7 +46,7 @@ final class ImagesListService {
                     }
                     photos.append(Photo(id: i.id,
                                         size: (CGSize(width: i.width, height: i.height)),
-                                        createdAt: dateFormatter().date(from: createdAtData),
+                                        createdAt: dateFormatter.date(from: createdAtData),
                                         welcomeDescription: i.description,
                                         thumbImageURL: i.urls.thumb,
                                         largeImageURL: i.urls.full,
@@ -156,6 +159,6 @@ private func makePhotoRequest(page: Int) -> URLRequest? {
     return request
 }
 
-private func dateFormatter() -> ISO8601DateFormatter {
-    return ISO8601DateFormatter()
-}
+//private func dateFormatter() -> ISO8601DateFormatter {
+//    return ISO8601DateFormatter()
+//}

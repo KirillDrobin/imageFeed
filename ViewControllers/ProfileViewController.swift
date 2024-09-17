@@ -13,8 +13,10 @@ final class ProfileViewController: UIViewController {
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "placeholder.jpeg")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "Rectangle 169")
+        imageView.frame.size.width = 70
+        imageView.layer.cornerRadius = imageView.frame.size.width / 2
+        imageView.clipsToBounds = true
         return imageView
     }()
     
@@ -51,7 +53,6 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
-        profileImageView.backgroundColor = .clear
         addSubviews()
         makeConstraints()
         UIBlockingProgressHUD.show()
@@ -101,15 +102,11 @@ final class ProfileViewController: UIViewController {
     private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL
-                
         else { return }
         let imageView = profileImageView
         let imageUrl = URL(string: profileImageURL)
-        let processor = RoundCornerImageProcessor(cornerRadius: 61)
         imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: imageUrl,
-                              placeholder: UIImage(named: "Rectangle 169"),
-                              options: [.processor(processor)]) { result in
+        imageView.kf.setImage(with: imageUrl) { result in
             
             switch result {
             case .success(let value):

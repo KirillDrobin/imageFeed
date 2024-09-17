@@ -8,6 +8,12 @@ class ImagesListViewController: UIViewController {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private var photos: [Photo] = []
     private var ImagesListViewControllerObserver: NSObjectProtocol?
+    private lazy var dateFormatter: DateFormatter = {
+        let date = DateFormatter()
+        date.dateFormat = "dd MMMM yyyy"
+        date.locale = Locale(identifier: "ru_RU")
+        return date
+    }()
     
     // MARK: - IB Outlets
     @IBOutlet private var tableView: UITableView!
@@ -95,7 +101,7 @@ extension ImagesListViewController {
         }
         
         cell.setIsLiked(like: photos[indexPath.row].isLiked)
-        cell.dateLabel.text = dateFormatter(date: date)
+        cell.dateLabel.text = dateFormatter.string(from: date)
         cell.delegate = self
     }
     
@@ -125,14 +131,6 @@ extension ImagesListViewController {
                 print("")
             }
         }
-    }
-    
-    private func dateFormatter(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMMM yyyy"
-        dateFormatter.locale = Locale(identifier: "ru_RU")
-        let convertDate = dateFormatter.string(from: date)
-        return convertDate
     }
 }
 

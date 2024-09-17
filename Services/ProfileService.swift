@@ -6,7 +6,6 @@ final class ProfileService {
     // MARK: - Private Properties
     private var task: URLSessionTask?
     private var lastToken: String?
-    
     private(set) var profile: Profile?
     init() {}
     
@@ -24,8 +23,8 @@ final class ProfileService {
             return
         }
         
-        let task = URLSession.shared .objectTask(for: profileDataRequest) { [weak self] (result: Result<ProfileResult, Error>) in
-            guard let self else { preconditionFailure("ProfileService not initialized") }
+        let task = URLSession.shared.objectTask(for: profileDataRequest) { [weak self] (result: Result<ProfileResult, Error>) in
+            guard let self else { return }
             self.task = nil
             switch result {
             case .success(let data):
