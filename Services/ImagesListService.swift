@@ -34,7 +34,7 @@ final class ImagesListService {
         }
         
         let task = URLSession.shared.objectTask(for: photoRequest) { [weak self] (result: Result<[PhotoResult], Error>) in
-            guard let self else { preconditionFailure("") }
+            guard let self else { return }
             self.task = nil
             switch result {
             case .success(let data):
@@ -103,7 +103,7 @@ final class ImagesListService {
         print("changeLike URL Request: \(request)")
         
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ChangeLike, Error>) in
-            guard let self else { preconditionFailure("") }
+            guard let self else { return }
             switch result {
             case .success(let photoLike):
                 DispatchQueue.main.async {
@@ -130,6 +130,10 @@ final class ImagesListService {
         }
         task.resume()
         return
+    }
+    func ImagesListServicePhotosClean() {
+        photos = []
+        lastLoadedPage = 1
     }
 }
 
@@ -158,7 +162,3 @@ private func makePhotoRequest(page: Int) -> URLRequest? {
     print("Photo URL Request: \(request)")
     return request
 }
-
-//private func dateFormatter() -> ISO8601DateFormatter {
-//    return ISO8601DateFormatter()
-//}

@@ -106,7 +106,7 @@ final class ProfileViewController: UIViewController {
         let imageView = profileImageView
         let imageUrl = URL(string: profileImageURL)
         imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: imageUrl) { result in
+        imageView.kf.setImage(with: imageUrl, placeholder: UIImage(named: "Rectangle 169")) { result in
             
             switch result {
             case .success(let value):

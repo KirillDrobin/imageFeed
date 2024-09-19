@@ -20,7 +20,7 @@ final class ProfileImageService {
         }
         
         let task = URLSession.shared.objectTask(for: userDataRequest) { [weak self] (result: Result<UserResult, Error>) in
-            guard let self else { preconditionFailure("") }
+            guard let self else { return }
             self.task = nil
             switch result {
             case .success(let data):

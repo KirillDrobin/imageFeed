@@ -35,7 +35,7 @@ final class OAuth2Service {
         lastCode = code
         
         let task = URLSession.shared.objectTask(for: tokenRequest) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
-            guard let self else { preconditionFailure("") }
+            guard let self else { return }
             self.task = nil
             self.lastCode = nil
             switch result {

@@ -2,8 +2,10 @@ import UIKit
 import Kingfisher
 
 class ImagesListViewController: UIViewController {
-    // MARK: - Private Properties
+    // MARK: - Static Properties
+    static let shared = ImagesListViewController()
     
+    // MARK: - Private Properties
     private let imagesListService = ImagesListService.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private var photos: [Photo] = []
@@ -90,7 +92,7 @@ extension ImagesListViewController {
         let imageURL = URL(string: photos[indexPath.row].thumbImageURL)
         let processor = RoundCornerImageProcessor(cornerRadius: 16)
         
-        cell.cellImage.kf.indicatorType = .activity
+        
         cell.cellImage.kf.setImage(with: imageURL,
                                    placeholder: UIImage(named: "Rectangle 169"),
                                    options: [.processor(processor)])

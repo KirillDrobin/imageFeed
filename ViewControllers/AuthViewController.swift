@@ -7,7 +7,7 @@ final class AuthViewController: UIViewController {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let ShowWebViewSegueIdentifier = "ShowWebView"
     
-    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak private var loginButton: UIButton!
     
     // MARK: - Public Properties
     var delegate: AuthViewControllerDelegate?

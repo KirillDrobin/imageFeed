@@ -11,7 +11,9 @@ import WebKit
 final class ProfileLogoutService {
     // MARK: - Private Properties
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
-    private let splashViewController = SplashViewController.shared
+    private let splashViewController = SplashViewController.sharedы
+    private let imagesListService = ImagesListService.shared
+    
     
     static let shared = ProfileLogoutService()
     
@@ -23,6 +25,7 @@ final class ProfileLogoutService {
         oAuth2TokenStorage.token = nil
         cleanCookies()
         switchToSplashViewController()
+        imagesListService.ImagesListServicePhotosClean()
      }
     
     private func cleanCookies() {

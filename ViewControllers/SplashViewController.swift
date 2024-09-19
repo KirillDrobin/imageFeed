@@ -1,13 +1,13 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
+    // MARK: - Static Properties
+    static let shared = SplashViewController()
     
     // MARK: - Private Properties
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
-    private let profileService = ProfileService()
-    
-    static let shared = SplashViewController()
+    private let profileService = ProfileService.shared
     
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView()
