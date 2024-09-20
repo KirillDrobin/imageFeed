@@ -11,9 +11,7 @@ final class ImagesListService {
     private(set) var photos: [Photo] = []
     private var task: URLSessionTask?
     private var lastLoadedPage = 1
-    private lazy var dateFormatter: ISO8601DateFormatter = {
-        return ISO8601DateFormatter()
-    }()
+    private lazy var dateFormatter = ISO8601DateFormatter()
     
     // MARK: - Static Properties
     static let shared = ImagesListService()
