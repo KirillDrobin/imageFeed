@@ -1,14 +1,14 @@
 import Foundation
 
 final class ProfileService {
+    // MARK: - Static Properties
     static let shared = ProfileService()
     
     // MARK: - Private Properties
     private var task: URLSessionTask?
     private var lastToken: String?
-    
     private(set) var profile: Profile?
-    init() {}
+    private init() {}
     
     private enum ProfileServiceError: Error {
         case profileLoadError
@@ -24,8 +24,8 @@ final class ProfileService {
             return
         }
         
-        let task = URLSession.shared .objectTask(for: profileDataRequest) { [weak self] (result: Result<ProfileResult, Error>) in
-            guard let self else { preconditionFailure("ProfileService not initialized") }
+        let task = URLSession.shared.objectTask(for: profileDataRequest) { [weak self] (result: Result<ProfileResult, Error>) in
+            guard let self else { return }
             self.task = nil
             switch result {
             case .success(let data):
@@ -43,7 +43,7 @@ final class ProfileService {
         }
         self.task = task
         task.resume()
-    }
+    }   
 }
 
 // MARK: - makeProfileDataRequest private func
@@ -78,3 +78,4 @@ struct Profile {
     let name: String
     let bio: String?
 }
+

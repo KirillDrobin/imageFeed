@@ -1,11 +1,13 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
+    // MARK: - Static Properties
+    static let shared = SplashViewController()
     
     // MARK: - Private Properties
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
-    private let profileService = ProfileService()
+    private let profileService = ProfileService.shared
     
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -25,7 +27,7 @@ final class SplashViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if oAuth2TokenStorage.token != nil {
+        if oAuth2TokenStorage.token != nil, oAuth2TokenStorage.token != "" {
             switchToTabBarController()
         } else {
             switchToAuthViewController()
@@ -47,7 +49,7 @@ final class SplashViewController: UIViewController {
         ])
     }
     
-    private func switchToAuthViewController() {
+    func switchToAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         guard
             let navigationViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? UINavigationController,
@@ -86,12 +88,12 @@ extension SplashViewController: AuthViewControllerDelegate {
     
     private func fetchProfile(_ token: String) {
         UIBlockingProgressHUD.show()
-        profileService.fetchProfile(token: token) { result in
+        profileService.fetchProfile(token: token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             switch result {
             case .success:
-                self.switchToTabBarController()
-                self.profileImageService.fetchProfileImageUrl(token: token) { result in
+                self?.switchToTabBarController()
+                self?.profileImageService.fetchProfileImageUrl(token: token) { result in
                     switch result {
                     case .success:
                         print("Success avatar load")

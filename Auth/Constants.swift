@@ -9,4 +9,6 @@ enum Constants {
     static let defaultURL = URL(string: "https://unsplash.com/")
     static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
     static let reuseIdentifier = "ImagesListCell"
+    static let showSingleImageSegueIdentifier = "ShowSingleImage"
+    static let authViewControllerIdentifier = "ShowAuthView"
 }

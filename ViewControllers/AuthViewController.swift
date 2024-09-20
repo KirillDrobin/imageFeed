@@ -7,8 +7,14 @@ final class AuthViewController: UIViewController {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let ShowWebViewSegueIdentifier = "ShowWebView"
     
+    @IBOutlet weak private var loginButton: UIButton!
+    
     // MARK: - Public Properties
     var delegate: AuthViewControllerDelegate?
+    
+    override func viewDidLoad() {
+        loginButton.titleLabel?.font = .boldSystemFont(ofSize: 17)
+    }
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

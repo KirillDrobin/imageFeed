@@ -1,17 +1,10 @@
 import UIKit
+import Kingfisher
+
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Public Properties
-    var image: UIImage? {
-        didSet {
-            guard isViewLoaded, let image else {
-                return
-            }
-            imageView.image = image
-            imageView.frame.size = image.size
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+    var fullImageURL: URL?
     
     // MARK: - IB Outlets
     @IBOutlet private var imageView: UIImageView!
@@ -21,20 +14,30 @@ final class SingleImageViewController: UIViewController {
     // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        downloadLargePhoto()
+    }
+    // MARK: - Private Methods
+    
+    private func downloadLargePhoto() {
+        UIBlockingProgressHUD.show()
         
-        guard let image else {
-            return
+        imageView.kf.setImage(with: fullImageURL) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure:
+                print("No large photo")
+            }
         }
-        imageView.image = image
-        imageView.frame.size = image.size
-        
-        singleImageScrollView.minimumZoomScale = 0.1
-        singleImageScrollView.maximumZoomScale = 1.25
-        rescaleAndCenterImageInScrollView(image: image)
     }
     
-    // MARK: - Private Methods
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
+        singleImageScrollView.minimumZoomScale = 1.7
+        singleImageScrollView.maximumZoomScale = 9
+        
         let minZoomScale = singleImageScrollView.minimumZoomScale
         let maxZoomScale = singleImageScrollView.maximumZoomScale
         view.layoutIfNeeded()
