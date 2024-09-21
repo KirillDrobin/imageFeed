@@ -8,6 +8,7 @@ final class ProfileViewController: UIViewController {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
+    private var profileDataDownloaderService = ProfileDataDownloaderService()
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -63,8 +64,11 @@ final class ProfileViewController: UIViewController {
         
         DispatchQueue.main.async { [weak self] in
             self?.profileService.fetchProfile(token: token) { [weak self] result in
-                self?.updateProfileDetails()
-                self?.profileImageService.fetchProfileImageUrl(token: token) { result in
+                guard let self = self else { return }
+                self.profileDataDownloaderService.updateProfileDetails(nameLabel: nameLabel,
+                                                                        nickNameLabel: nickNameLabel,
+                                                                        profileDescriptionLabel: profileDescriptionLabel)
+                self.profileImageService.fetchProfileImageUrl(token: token) { result in
                     switch result {
                     case .success:
                         print("Success avatar load")
@@ -82,46 +86,14 @@ final class ProfileViewController: UIViewController {
                     queue: .main
                 ) { [weak self] _ in
                     guard let self = self else { return }
-                    self.updateAvatar()
+                    self.profileDataDownloaderService.updateAvatar(profileImageView: profileImageView)
                 }
-            self?.updateAvatar()
+            guard let self = self else { return }
+            self.profileDataDownloaderService.updateAvatar(profileImageView: profileImageView)
         }
     }
     
     // MARK: - Private Methods
-    private func updateProfileDetails() {
-        if let profile = profileService.profile {
-            nameLabel.text = profile.name
-            nickNameLabel.text = "@\(profile.username)"
-            profileDescriptionLabel.text = profile.bio
-        } else {
-            print("No profile found")
-        }
-    }
-    
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL
-        else { return }
-        let imageView = profileImageView
-        let imageUrl = URL(string: profileImageURL)
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: imageUrl, placeholder: UIImage(named: "Rectangle 169")) { result in
-            
-            switch result {
-            case .success(let value):
-                print("Kingfisher avatar success")
-                print(value.image)
-                print(value.cacheType)
-                print(value.source)
-            case .failure(let error):
-                print(error)
-            }
-        }
-        let cache = ImageCache.default
-        cache.memoryStorage.config.totalCostLimit = 300 * 1024 * 1024
-    }
-    
     private func addSubviews() {
         [
             profileImageView,

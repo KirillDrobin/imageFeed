@@ -77,11 +77,13 @@ final class ImagesListService {
         if task != nil {
             task?.cancel()
         }
-        
+    
         let oAuth2TokenStorage = OAuth2TokenStorage.shared
+        let baseURL = Constants.defaultBaseURL
+        
         guard
-            let token = oAuth2TokenStorage.token,
-            let baseURL = Constants.defaultBaseURL
+            let token = oAuth2TokenStorage.token
+            
         else {
             preconditionFailure("Unable to construct baseURL for like responce")
         }
@@ -139,10 +141,9 @@ final class ImagesListService {
 private func makePhotoRequest(page: Int) -> URLRequest? {
     
     let oAuth2TokenStorage = OAuth2TokenStorage.shared
-    
+    let baseURL = Constants.defaultBaseURL
     guard
-        let token = oAuth2TokenStorage.token,
-        let baseURL = Constants.defaultBaseURL
+        let token = oAuth2TokenStorage.token
     else {
         preconditionFailure("Unable to construct baseURL")
     }

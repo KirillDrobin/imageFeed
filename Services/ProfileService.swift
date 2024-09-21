@@ -48,10 +48,8 @@ final class ProfileService {
 
 // MARK: - makeProfileDataRequest private func
 private func makeProfileDataRequest(token: String) -> URLRequest? {
-    guard let baseURL = Constants.defaultBaseURL
-    else {
-        preconditionFailure("Unable to construct baseURL")
-    }
+    let baseURL = Constants.defaultBaseURL
+
     guard let url = URL(
         string: "/me",
         relativeTo: baseURL
