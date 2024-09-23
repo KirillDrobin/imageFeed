@@ -1,17 +1,17 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol{
+    var presenter: ProfilePresenterProtocol?
     
     // MARK: - Private Properties
     private let profileService = ProfileService.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
-    
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private lazy var profileImageView: UIImageView = {
+    var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Rectangle 169")
         imageView.frame.size.width = 70
@@ -20,21 +20,21 @@ final class ProfileViewController: UIViewController {
         return imageView
     }()
     
-    private let nameLabel: UILabel = {
+    var nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypWhite
         label.font = UIFont.boldSystemFont(ofSize: 23.0)
         return label
     }()
     
-    private let nickNameLabel: UILabel = {
+    var nickNameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypGrey
         label.font = UIFont.systemFont(ofSize: 13.0)
         return label
     }()
     
-    private let profileDescriptionLabel: UILabel = {
+    var profileDescriptionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypWhite
         label.font = UIFont.systemFont(ofSize: 13.0)
@@ -52,77 +52,21 @@ final class ProfileViewController: UIViewController {
     // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypBlack
-        addSubviews()
-        makeConstraints()
+        exitButton.accessibilityIdentifier = "logout button"
         UIBlockingProgressHUD.show()
-        guard let token = oAuth2TokenStorage.token else {
-            print("token error ")
-            return
-        }
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.profileService.fetchProfile(token: token) { [weak self] result in
-                self?.updateProfileDetails()
-                self?.profileImageService.fetchProfileImageUrl(token: token) { result in
-                    switch result {
-                    case .success:
-                        print("Success avatar load")
-                    case .failure:
-                        print("Load avatar error")
-                        break
-                    }
-                }
-            }
-            
-            self?.profileImageServiceObserver = NotificationCenter.default
-                .addObserver(
-                    forName: ProfileImageService.didChangeNotification,
-                    object: nil,
-                    queue: .main
-                ) { [weak self] _ in
-                    guard let self = self else { return }
-                    self.updateAvatar()
-                }
-            self?.updateAvatar()
-        }
+        view.backgroundColor = .ypBlack
+        presenter?.viewDidLoad()
+        presenter?.updateProfile()
     }
     
-    // MARK: - Private Methods
-    private func updateProfileDetails() {
-        if let profile = profileService.profile {
-            nameLabel.text = profile.name
-            nickNameLabel.text = "@\(profile.username)"
-            profileDescriptionLabel.text = profile.bio
-        } else {
-            print("No profile found")
-        }
+    // MARK: - Init
+    func startProfileViewController(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = ProfilePresenter()
+        self.presenter?.view = self
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL
-        else { return }
-        let imageView = profileImageView
-        let imageUrl = URL(string: profileImageURL)
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: imageUrl, placeholder: UIImage(named: "Rectangle 169")) { result in
-            
-            switch result {
-            case .success(let value):
-                print("Kingfisher avatar success")
-                print(value.image)
-                print(value.cacheType)
-                print(value.source)
-            case .failure(let error):
-                print(error)
-            }
-        }
-        let cache = ImageCache.default
-        cache.memoryStorage.config.totalCostLimit = 300 * 1024 * 1024
-    }
-    
-    private func addSubviews() {
+    // MARK: - Methods
+    func addSubviews() {
         [
             profileImageView,
             nameLabel,
@@ -135,7 +79,7 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    private func makeConstraints() {
+    func makeConstraints() {
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: 70),
             profileImageView.heightAnchor.constraint(equalToConstant: 70),
@@ -165,7 +109,6 @@ final class ProfileViewController: UIViewController {
         let alertNo = UIAlertAction(title: "Нет", style: .default, handler: { action in
             alert.dismiss(animated: true)
         })
-        
         alert.addAction(alertYes)
         alert.addAction(alertNo)
         alert.preferredAction = alertNo

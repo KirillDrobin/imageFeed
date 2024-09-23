@@ -55,10 +55,8 @@ private func makeUserDataRequest(token: String) -> URLRequest? {
     }
     let username = profile.username
     
-    guard let baseURL = Constants.defaultBaseURL
-    else {
-        preconditionFailure("Unable to construct baseURL")
-    }
+    let baseURL = Constants.defaultBaseURL
+
     guard let url = URL(
         string: "/users/\(username)",
         relativeTo: baseURL

@@ -14,7 +14,6 @@ final class ProfileLogoutService {
     private let splashViewController = SplashViewController.shared
     private let imagesListService = ImagesListService.shared
     
-    
     static let shared = ProfileLogoutService()
     
     // MARK: - Initializers
