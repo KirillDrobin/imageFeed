@@ -42,11 +42,9 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
                 assertionFailure("Invalid segue destination")
                 return
             }
+            guard let largeImageURL = presenter?.photos[indexPath.row].largeImageURL else { return }
+            guard let fullImageURL = URL(string: largeImageURL) else { return }
             
-            guard let fullImageURL = URL(string: "\(String(describing: presenter?.photos[indexPath.row].largeImageURL))")
-            else {
-                return
-            }
             viewController.fullImageURL = fullImageURL
         } else {
             super.prepare(for: segue, sender: sender)
@@ -59,6 +57,7 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
         self.presenter?.view = self
     }
 }
+
 // MARK: - extensions ImagesListViewController
 extension ImageListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -83,8 +82,8 @@ extension ImageListViewController: UITableViewDataSource {
 }
 
 extension ImageListViewController {
-    
-    func configCell(cell: ImagesListCell, indexPath: IndexPath) {
+    // MARK: - Private Methods
+    private func configCell(cell: ImagesListCell, indexPath: IndexPath) {
         presenter?.cellDataLoader(cell: cell, indexPath: indexPath)
         cell.delegate = self
     }

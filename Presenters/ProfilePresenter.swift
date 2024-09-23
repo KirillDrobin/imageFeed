@@ -16,6 +16,11 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     
+    func viewDidLoad() {
+        view?.addSubviews()
+        view?.makeConstraints()
+    }
+    
     func updateProfile() {
         guard let token = oAuth2TokenStorage.token
         else {
@@ -54,7 +59,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         }
     }
     
-    func updateProfileDetails(nameLabel: UILabel, nickNameLabel: UILabel, profileDescriptionLabel: UILabel) {
+    private func updateProfileDetails(nameLabel: UILabel, nickNameLabel: UILabel, profileDescriptionLabel: UILabel) {
         if let profile = profileService.profile {
             nameLabel.text = profile.name
             nickNameLabel.text = "@\(profile.username)"
@@ -64,7 +69,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         }
     }
     
-    func updateAvatar(profileImageView: UIImageView) {
+    private func updateAvatar(profileImageView: UIImageView) {
         guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
         let imageView = profileImageView
         let imageUrl = URL(string: profileImageURL)

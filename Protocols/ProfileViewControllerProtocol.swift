@@ -12,4 +12,6 @@ protocol ProfileViewControllerProtocol: AnyObject {
     var nameLabel: UILabel { get set }
     var nickNameLabel: UILabel { get set }
     var profileDescriptionLabel: UILabel { get set }
+    func addSubviews()
+    func makeConstraints()
 }

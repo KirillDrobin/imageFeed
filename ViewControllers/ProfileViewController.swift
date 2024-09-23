@@ -51,23 +51,22 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     
     // MARK: - View Life Cycles
     override func viewDidLoad() {
-        exitButton.accessibilityIdentifier = "logout button"
         super.viewDidLoad()
-        view.backgroundColor = .ypBlack
-        addSubviews()
-        makeConstraints()
+        exitButton.accessibilityIdentifier = "logout button"
         UIBlockingProgressHUD.show()
+        view.backgroundColor = .ypBlack
+        presenter?.viewDidLoad()
         presenter?.updateProfile()
     }
     
-    // MARK: - Methods
+    // MARK: - Init
     func startProfileViewController(_ presenter: ProfilePresenterProtocol) {
         self.presenter = ProfilePresenter()
         self.presenter?.view = self
     }
     
-    // MARK: - Private Methods
-    private func addSubviews() {
+    // MARK: - Methods
+    func addSubviews() {
         [
             profileImageView,
             nameLabel,
@@ -80,7 +79,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         }
     }
     
-    private func makeConstraints() {
+    func makeConstraints() {
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: 70),
             profileImageView.heightAnchor.constraint(equalToConstant: 70),

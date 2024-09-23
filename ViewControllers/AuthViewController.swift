@@ -11,7 +11,6 @@ final class AuthViewController: UIViewController {
     
     // MARK: - Public Properties
     var delegate: AuthViewControllerDelegate?
-    
     override func viewDidLoad() {
         loginButton.titleLabel?.font = .boldSystemFont(ofSize: 17)
     }

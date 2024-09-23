@@ -74,3 +74,4 @@ final class ImageListPresenter: ImageListPresenterProtocol {
         }
     }
 }
+
