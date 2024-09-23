@@ -13,7 +13,7 @@ final class ImagesListCell: UITableViewCell {
         super.awakeFromNib()
         gradient()
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImage.kf.cancelDownloadTask()
@@ -35,6 +35,11 @@ final class ImagesListCell: UITableViewCell {
     
     func setIsLiked(like: Bool) {
         let likeImage = like ? UIImage(named: "Like Active") : UIImage(named: "Like No Active")
+        if likeImage == UIImage(named: "Like Active") {
+            likeButton.accessibilityIdentifier = "like button on"
+        } else {
+            likeButton.accessibilityIdentifier = "like button off"
+        }
         print("Like is \(String(describing: likeImage))")
         likeButton.setImage(likeImage, for: .normal)
     }

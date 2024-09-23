@@ -34,16 +34,6 @@ final class AuthViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == ShowWebViewSegueIdentifier {
-//            guard
-//                let webViewViewController = segue.destination as? WebViewViewController
-//            else { fatalError("Failed to prepare for \(ShowWebViewSegueIdentifier)") }
-//            webViewViewController.delegate = self
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
-//    }
 }
 
 // MARK: - extension AuthViewController

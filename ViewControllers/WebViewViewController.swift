@@ -13,6 +13,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     
     // MARK: - View Life Cycles
     override func viewDidLoad() {
+        webView.accessibilityIdentifier = "UnsplashWebView"
         super.viewDidLoad()
         webView.navigationDelegate = self
         presenter?.viewDidLoad()
@@ -30,7 +31,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     func load(request: URLRequest) {
         webView.load(request)
     }
-    
+
     // MARK: - Methods
     func setProgressValue(_ newValue: Float) {
         progressView.progress = newValue

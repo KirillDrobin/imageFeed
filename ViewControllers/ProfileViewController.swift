@@ -1,18 +1,17 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol{
+    var presenter: ProfilePresenterProtocol?
     
     // MARK: - Private Properties
     private let profileService = ProfileService.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
-    private var profileDataDownloaderService = ProfileDataDownloaderService()
-    
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private lazy var profileImageView: UIImageView = {
+    var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Rectangle 169")
         imageView.frame.size.width = 70
@@ -21,21 +20,21 @@ final class ProfileViewController: UIViewController {
         return imageView
     }()
     
-    private let nameLabel: UILabel = {
+    var nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypWhite
         label.font = UIFont.boldSystemFont(ofSize: 23.0)
         return label
     }()
     
-    private let nickNameLabel: UILabel = {
+    var nickNameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypGrey
         label.font = UIFont.systemFont(ofSize: 13.0)
         return label
     }()
     
-    private let profileDescriptionLabel: UILabel = {
+    var profileDescriptionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypWhite
         label.font = UIFont.systemFont(ofSize: 13.0)
@@ -52,45 +51,19 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - View Life Cycles
     override func viewDidLoad() {
+        exitButton.accessibilityIdentifier = "logout button"
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
         addSubviews()
         makeConstraints()
         UIBlockingProgressHUD.show()
-        guard let token = oAuth2TokenStorage.token else {
-            print("token error ")
-            return
-        }
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.profileService.fetchProfile(token: token) { [weak self] result in
-                guard let self = self else { return }
-                self.profileDataDownloaderService.updateProfileDetails(nameLabel: nameLabel,
-                                                                        nickNameLabel: nickNameLabel,
-                                                                        profileDescriptionLabel: profileDescriptionLabel)
-                self.profileImageService.fetchProfileImageUrl(token: token) { result in
-                    switch result {
-                    case .success:
-                        print("Success avatar load")
-                    case .failure:
-                        print("Load avatar error")
-                        break
-                    }
-                }
-            }
-            
-            self?.profileImageServiceObserver = NotificationCenter.default
-                .addObserver(
-                    forName: ProfileImageService.didChangeNotification,
-                    object: nil,
-                    queue: .main
-                ) { [weak self] _ in
-                    guard let self = self else { return }
-                    self.profileDataDownloaderService.updateAvatar(profileImageView: profileImageView)
-                }
-            guard let self = self else { return }
-            self.profileDataDownloaderService.updateAvatar(profileImageView: profileImageView)
-        }
+        presenter?.updateProfile()
+    }
+    
+    // MARK: - Methods
+    func startProfileViewController(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = ProfilePresenter()
+        self.presenter?.view = self
     }
     
     // MARK: - Private Methods
@@ -137,7 +110,6 @@ final class ProfileViewController: UIViewController {
         let alertNo = UIAlertAction(title: "Нет", style: .default, handler: { action in
             alert.dismiss(animated: true)
         })
-        
         alert.addAction(alertYes)
         alert.addAction(alertNo)
         alert.preferredAction = alertNo
